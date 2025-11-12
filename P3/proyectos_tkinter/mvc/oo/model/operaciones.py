@@ -1,21 +1,18 @@
 #archivo nota
 from conexionBD import *
-import datetime
-
-class Nota:
+class Operaciones:
     @staticmethod
-    def crear(usuario_id, titulo,descripcion):
+    def insertar(numero1,numero2,signo,resultado):
         try:
-            fecha=datetime.datetime.now()
-            sql="insert into notas (usuario_id, titulo,descripcion,fecha) values (%s, %s, %s, %s)"
-            val=(usuario_id, titulo, descripcion,fecha)
+            sql="insert into operaciones (numero1,numero2,signo,resultado) values (%s, %s, %s, %s)"
+            val=(numero1, numero2, signo, resultado)
             cursor.execute(sql,val)
             conexion.commit()
             return True
         except:
             return False
         
-    def mostrar(usuario_id):
+    def consultar(usuario_id):
         try:
             sql="select * from notas where usuario_id=%s"
             val=(usuario_id,)
@@ -24,7 +21,7 @@ class Nota:
         except:
             return []
         
-    def cambiar(id, titulo, descripcion):
+    def actualizar(id, titulo, descripcion):
         try:
             cursor.execute("SELECT * FROM notas WHERE id=%s", (id,))
             nota_existente = cursor.fetchone()
@@ -38,7 +35,7 @@ class Nota:
         except:
             return False
 
-    def borrar(id):
+    def eliminar(id):
         try:
             cursor.execute("SELECT * FROM notas WHERE id=%s", (id,))
             nota_existente = cursor.fetchone()
