@@ -137,8 +137,4 @@ class Camionetas(Coches):
        return "Estoy acelerando la camioneta"
 
       def frenar(self):
-       return "Estoy frenando la camioneta" 
-
-
-
-
+       return "Estoy frenando la camioneta"
