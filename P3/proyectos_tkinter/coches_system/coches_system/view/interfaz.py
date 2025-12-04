@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+from controller.funciones import funciones
 
 class Vista:
     def __init__(self,ventana):
@@ -38,51 +39,169 @@ class Vista:
 
     @staticmethod
     def insertar_autos(ventana):
+        from tkinter import messagebox
+
         Vista.borrarPantalla(ventana)
         Label(ventana, text="..:: Insertar Auto ::..").pack()
 
-        for texto in ["Marca","Color","Modelo","Velocidad","Caballaje","Plazas"]:
-            Label(ventana, text=texto).pack()
-            Entry(ventana, width=15).pack(pady=5)
+        lbl_marca = Label(ventana, text="Marca")
+        lbl_marca.pack()
+        marca = StringVar()
+        Entry(ventana, textvariable=marca, width=15).pack(pady=5)
 
-        Button(ventana, text="Guardar", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
+        lbl_color = Label(ventana, text="Color")
+        lbl_color.pack()
+        color = StringVar()
+        Entry(ventana, textvariable=color, width=15).pack(pady=5)
+
+        lbl_modelo = Label(ventana, text="Modelo")
+        lbl_modelo.pack()
+        modelo = IntVar()
+        Entry(ventana, textvariable=modelo, width=15).pack(pady=5)
+
+        lbl_velo = Label(ventana, text="Velocidad")
+        lbl_velo.pack()
+        velocidad = IntVar()
+        Entry(ventana, textvariable=velocidad, width=15).pack(pady=5)
+
+        lbl_caba = Label(ventana, text="Caballaje")
+        lbl_caba.pack()
+        caballaje = IntVar()
+        Entry(ventana, textvariable=caballaje, width=15).pack(pady=5)
+
+        lbl_plaza = Label(ventana, text="Plazas")
+        lbl_plaza.pack()
+        plazas = IntVar()
+        Entry(ventana, textvariable=plazas, width=15).pack(pady=5)
+
+
+        def guardar():
+            auto = funciones.Autos(
+                marca.get(),
+                color.get(),
+                modelo.get(),
+                velocidad.get(),
+                caballaje.get(),
+                plazas.get()
+            )
+
+            if auto.insertar():
+                messagebox.showinfo("Éxito", "Auto guardado correctamente.")
+            else:
+                messagebox.showerror("Error", "No se pudo guardar el auto.")
+
+
+        Button(ventana, text="Guardar", command=guardar).pack(pady=10)
         Button(ventana, text="Volver", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
 
     @staticmethod
     def consultar_autos(ventana):
-        Vista.borrarPantalla(ventana)
-        Label(ventana, text="..:: Consultar Autos ::..").pack()
+        from controller.funciones import funciones
 
-        Label(ventana, text="Aquí irían los resultados").pack(pady=20)
+        Vista.borrarPantalla(ventana)
+
+        Label(ventana, text="..:: Autos Registrados ::..", font=("Arial", 14)).pack(pady=10)
+
+        autos = funciones.Autos.consultar()
+
+        if not autos:
+            Label(ventana, text="No hay autos registrados.", fg="red").pack(pady=10)
+        else:
+            for auto in autos:
+                texto = f"""
+    ID: {auto[0]}  
+    Marca: {auto[1]}  
+    Color: {auto[2]}  
+    Modelo: {auto[3]}  
+    Velocidad: {auto[4]}  
+    Caballaje: {auto[5]}  
+    Plazas: {auto[6]}
+    """
+                Label(ventana, text=texto, justify=LEFT, anchor="w").pack()
+
         Button(ventana, text="Volver", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
+
 
     @staticmethod
     def cambiar_autos_pedir_id(ventana):
         Vista.borrarPantalla(ventana)
+
         Label(ventana, text="..:: Cambiar Auto ::..").pack()
+        Label(ventana, text="Ingrese el ID del auto a modificar:").pack()
 
-        Label(ventana, text="ID del Auto").pack()
-        id_entry = Entry(ventana, width=15)
-        id_entry.pack(pady=5)
+        id_var = IntVar()
+        Entry(ventana, textvariable=id_var, width=15).pack(pady=5)
 
-        Button(
-            ventana,
-            text="Continuar",
-            command=lambda: Vista.cambiar_autos_form(ventana, id_entry.get())
-        ).pack(pady=10)
+        def buscar():
+            from controller.funciones import funciones
+            datos = funciones.Autos.consultar()
 
+            for auto in datos:
+                if auto[0] == id_var.get():
+                    Vista.cambiar_autos_formulario(ventana, auto)
+                    return
+
+            # Si no existió
+            messagebox.showerror("Error", "No existe un auto con ese ID.")
+
+        Button(ventana, text="Buscar", command=buscar).pack(pady=10)
         Button(ventana, text="Volver", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
 
     @staticmethod
-    def cambiar_autos_form(ventana, id_auto):
+    def cambiar_autos_formulario(ventana, datos_auto):
+        # datos_auto = (id, marca, color, modelo, velocidad, caballaje, plazas)
         Vista.borrarPantalla(ventana)
-        Label(ventana, text=f"..:: Editando Auto ID {id_auto} ::..").pack(pady=10)
 
-        for texto in ["Marca","Color","Modelo","Velocidad","Caballaje","Plazas"]:
-            Label(ventana, text=texto).pack()
-            Entry(ventana, width=15).pack(pady=5)
+        Label(ventana, text="..:: Modificar Auto ::..").pack()
 
-        Button(ventana, text="Guardar", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
+        id_auto = datos_auto[0]
+
+        # CAMPOS
+        Label(ventana, text="Marca").pack()
+        marca = StringVar(value=datos_auto[1])
+        Entry(ventana, textvariable=marca, width=15).pack(pady=5)
+
+        Label(ventana, text="Color").pack()
+        color = StringVar(value=datos_auto[2])
+        Entry(ventana, textvariable=color, width=15).pack(pady=5)
+
+        Label(ventana, text="Modelo").pack()
+        modelo = IntVar(value=datos_auto[3])
+        Entry(ventana, textvariable=modelo, width=15).pack(pady=5)
+
+        Label(ventana, text="Velocidad").pack()
+        velocidad = IntVar(value=datos_auto[4])
+        Entry(ventana, textvariable=velocidad, width=15).pack(pady=5)
+
+        Label(ventana, text="Caballaje").pack()
+        caballaje = IntVar(value=datos_auto[5])
+        Entry(ventana, textvariable=caballaje, width=15).pack(pady=5)
+
+        Label(ventana, text="Plazas").pack()
+        plazas = IntVar(value=datos_auto[6])
+        Entry(ventana, textvariable=plazas, width=15).pack(pady=5)
+
+        # BOTÓN GUARDAR CAMBIOS
+        def guardar_cambios():
+            from controller.funciones import funciones
+
+            ok = funciones.Autos.actualizar(
+                marca.get(),
+                color.get(),
+                modelo.get(),
+                velocidad.get(),
+                caballaje.get(),
+                plazas.get(),
+                id_auto
+            )
+
+            if ok:
+                messagebox.showinfo("Éxito", "Auto actualizado correctamente.")
+                Vista.menu_autos(ventana)
+            else:
+                messagebox.showerror("Error", "No se pudo actualizar el auto.")
+
+        Button(ventana, text="Guardar Cambios", command=guardar_cambios).pack(pady=10)
         Button(ventana, text="Volver", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
 
     @staticmethod
@@ -90,11 +209,57 @@ class Vista:
         Vista.borrarPantalla(ventana)
         Label(ventana, text="..:: Borrar Auto ::..").pack()
 
-        Label(ventana, text="ID a eliminar").pack()
-        Entry(ventana, width=15).pack(pady=5)
+        Label(ventana, text="Ingrese el ID del auto a eliminar").pack()
 
-        Button(ventana, text="Guardar", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
+        id_var = IntVar()
+        Entry(ventana, textvariable=id_var, width=15).pack(pady=5)
+
+        def buscar():
+            from controller.funciones import funciones
+            autos = funciones.Autos.consultar()
+
+            for auto in autos:
+                if auto[0] == id_var.get():
+                    Vista.borrar_autos_confirmacion(ventana, auto)
+                    return
+
+            messagebox.showerror("Error", "No existe un auto con ese ID.")
+
+        Button(ventana, text="Buscar", command=buscar).pack(pady=10)
         Button(ventana, text="Volver", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
+
+    @staticmethod
+    def borrar_autos_confirmacion(ventana, auto):
+        # auto = (id, marca, color, modelo, velocidad, caballaje, plazas)
+        Vista.borrarPantalla(ventana)
+
+        Label(ventana, text="..:: Confirmar Eliminación ::..").pack(pady=5)
+
+        texto = f"""
+    ID: {auto[0]}
+    Marca: {auto[1]}
+    Color: {auto[2]}
+    Modelo: {auto[3]}
+    Velocidad: {auto[4]}
+    Caballaje: {auto[5]}
+    Plazas: {auto[6]}
+    """
+        Label(ventana, text=texto, justify=LEFT).pack(pady=5)
+
+        def eliminar():
+            from controller.funciones import cursor, conexion
+
+            try:
+                cursor.execute("DELETE FROM coches WHERE id = %s", (auto[0],))
+                conexion.commit()
+                messagebox.showinfo("Éxito", "Auto eliminado correctamente.")
+                Vista.menu_autos(ventana)
+            except Exception as e:
+                print(e)
+                messagebox.showerror("Error", "No se pudo eliminar el auto.")
+
+        Button(ventana, text="Eliminar", command=eliminar).pack(pady=10)
+        Button(ventana, text="Cancelar", command=lambda: Vista.menu_autos(ventana)).pack(pady=10)
 
     @staticmethod
     def menu_camiones(ventana):

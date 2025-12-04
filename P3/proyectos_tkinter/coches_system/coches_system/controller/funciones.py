@@ -41,7 +41,7 @@ class funciones:
         def insertar(self):
             try:
                 cursor.execute(
-                    "insert into autos values(null,%s,%s,%s,%s,%s,%s)",
+                    "insert into coches values(null,%s,%s,%s,%s,%s,%s)",
                     (self._marca,self._color,self._modelo,self._velocidad,self._caballaje,self._plazas)
                 )
                 conexion.commit()
@@ -52,7 +52,7 @@ class funciones:
         @staticmethod   
         def consultar():
             try:
-                cursor.execute("select * from autos")
+                cursor.execute("select * from coches")
                 return cursor.fetchall()
             except:
                 return []
@@ -61,7 +61,7 @@ class funciones:
         def actualizar(marca,color,modelo,velocidad,caballaje,plazas,id):
             try:
                 cursor.execute(
-                    "update autos set marca=%s,color=%s,modelo=%s,velocidad=%s,caballaje=%s,plazas=%s where id=%s",(marca,color,modelo,velocidad,caballaje,plazas,id)
+                    "update coches set marca=%s,color=%s,modelo=%s,velocidad=%s,caballaje=%s,plazas=%s where id=%s",(marca,color,modelo,velocidad,caballaje,plazas,id)
                 )
                 conexion.commit()
                 return True
@@ -72,7 +72,7 @@ class funciones:
         def eliminar(id):
             try:
                 cursor.execute(
-                    "delete from autos where id=%s",(id,)
+                    "delete from coches where id=%s",(id,)
                     )
                 conexion.commit()
                 return True
