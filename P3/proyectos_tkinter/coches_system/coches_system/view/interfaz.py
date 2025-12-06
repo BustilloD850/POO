@@ -283,7 +283,7 @@ class Vista:
             Entry(ventana, textvariable=var, width=15).pack(pady=5)
 
         def guardar():
-            camion = funciones.Camiones(
+            camion = funciones.Camiones.insertar(
                 marca.get(),
                 color.get(),
                 modelo.get(),
@@ -294,7 +294,7 @@ class Vista:
                 capacidad.get()
             )
 
-            if camion.insertar():
+            if camion:
                 messagebox.showinfo("Éxito", "Camión guardado correctamente.")
             else:
                 messagebox.showerror("Error", "No se pudo guardar el camión.")
@@ -335,8 +335,8 @@ Capacidad: {camion[8]} T
     def cambiar_camiones_pedir_id(ventana):
         Vista.borrarPantalla(ventana)
 
-        Label(ventana, text="..:: Cambiar Camión ::..").pack()
-        Label(ventana, text="Ingrese el ID del camión a modificar:").pack()
+        Label(ventana, text="..:: Cambiar Camion ::..").pack()
+        Label(ventana, text="Ingrese el ID del camion a modificar:").pack()
 
         id_var = IntVar()
         Entry(ventana, textvariable=id_var, width=15).pack(pady=5)
@@ -349,42 +349,50 @@ Capacidad: {camion[8]} T
                     Vista.cambiar_camiones_formulario(ventana, camion)
                     return
 
-            messagebox.showerror("Error", "No existe un camión con ese ID.")
+            messagebox.showerror("Error", "No existe un camion con ese ID.")
 
         Button(ventana, text="Buscar", command=buscar).pack(pady=10)
         Button(ventana, text="Volver", command=lambda: Vista.menu_camiones(ventana)).pack(pady=10)
 
     @staticmethod
-    def cambiar_camiones_formulario(ventana, datos):
+    def cambiar_camiones_formulario(ventana, datos_camion):
         Vista.borrarPantalla(ventana)
 
-        Label(ventana, text="..:: Modificar Camión ::..").pack()
+        Label(ventana, text="..:: Modificar camion ::..").pack()
 
-        id_camion = datos[0]
+        id_auto = datos_camion[0]
 
-        marca = StringVar(value=datos[1])
-        color = StringVar(value=datos[2])
-        modelo = IntVar(value=datos[3])
-        velocidad = IntVar(value=datos[4])
-        caballaje = IntVar(value=datos[5])
-        plazas = IntVar(value=datos[6])
-        ejes = IntVar(value=datos[7])
-        capacidad = IntVar(value=datos[8])
+        Label(ventana, text="Marca").pack()
+        marca = StringVar(value=datos_camion[1])
+        Entry(ventana, textvariable=marca, width=15).pack(pady=5)
 
-        campos = [
-            ("Marca", marca),
-            ("Color", color),
-            ("Modelo", modelo),
-            ("Velocidad", velocidad),
-            ("Caballaje", caballaje),
-            ("Plazas", plazas),
-            ("Ejes", ejes),
-            ("Capacidad de Carga (T)", capacidad),
-        ]
+        Label(ventana, text="Color").pack()
+        color = StringVar(value=datos_camion[2])
+        Entry(ventana, textvariable=color, width=15).pack(pady=5)
 
-        for texto, var in campos:
-            Label(ventana, text=texto).pack()
-            Entry(ventana, textvariable=var, width=15).pack(pady=5)
+        Label(ventana, text="Modelo").pack()
+        modelo = IntVar(value=datos_camion[3])
+        Entry(ventana, textvariable=modelo, width=15).pack(pady=5)
+
+        Label(ventana, text="Velocidad").pack()
+        velocidad = IntVar(value=datos_camion[4])
+        Entry(ventana, textvariable=velocidad, width=15).pack(pady=5)
+
+        Label(ventana, text="Caballaje").pack()
+        caballaje = IntVar(value=datos_camion[5])
+        Entry(ventana, textvariable=caballaje, width=15).pack(pady=5)
+
+        Label(ventana, text="Plazas").pack()
+        plazas = IntVar(value=datos_camion[6])
+        Entry(ventana, textvariable=plazas, width=15).pack(pady=5)
+        
+        Label(ventana, text="Eje").pack()
+        eje = IntVar(value=datos_camion[7])
+        Entry(ventana, textvariable=eje, width=15).pack(pady=5)
+
+        Label(ventana, text="Capacidad de carga").pack()
+        carga = IntVar(value=datos_camion[8])
+        Entry(ventana, textvariable=carga, width=15).pack(pady=5)
 
         def guardar_cambios():
             ok = funciones.Camiones.actualizar(
@@ -394,16 +402,16 @@ Capacidad: {camion[8]} T
                 velocidad.get(),
                 caballaje.get(),
                 plazas.get(),
-                ejes.get(),
-                capacidad.get(),
-                id_camion
+                eje.get(),
+                carga.get(),
+                id_auto
             )
 
             if ok:
-                messagebox.showinfo("Éxito", "Camión actualizado correctamente.")
+                messagebox.showinfo("Éxito", "Camion actualizado correctamente.")
                 Vista.menu_camiones(ventana)
             else:
-                messagebox.showerror("Error", "No se pudo actualizar el camión.")
+                messagebox.showerror("Error", "No se pudo actualizar el camion.")
 
         Button(ventana, text="Guardar Cambios", command=guardar_cambios).pack(pady=10)
         Button(ventana, text="Volver", command=lambda: Vista.menu_camiones(ventana)).pack(pady=10)
@@ -411,9 +419,9 @@ Capacidad: {camion[8]} T
     @staticmethod
     def borrar_camiones(ventana):
         Vista.borrarPantalla(ventana)
-        Label(ventana, text="..:: Borrar Camión ::..").pack()
+        Label(ventana, text="..:: Borrar Camion ::..").pack()
 
-        Label(ventana, text="Ingrese el ID del camión a eliminar").pack()
+        Label(ventana, text="Ingrese el ID del camion a eliminar").pack()
 
         id_var = IntVar()
         Entry(ventana, textvariable=id_var, width=15).pack(pady=5)
@@ -426,7 +434,7 @@ Capacidad: {camion[8]} T
                     Vista.borrar_camiones_confirmacion(ventana, camion)
                     return
 
-            messagebox.showerror("Error", "No existe un camión con ese ID.")
+            messagebox.showerror("Error", "No existe un camion con ese ID.")
 
         Button(ventana, text="Buscar", command=buscar).pack(pady=10)
         Button(ventana, text="Volver", command=lambda: Vista.menu_camiones(ventana)).pack(pady=10)
@@ -438,20 +446,252 @@ Capacidad: {camion[8]} T
         Label(ventana, text="..:: Confirmar Eliminación ::..").pack(pady=5)
 
         texto = f"""
-ID: {camion[0]}
-Marca: {camion[1]}
-Color: {camion[2]}
-Modelo: {camion[3]}
-Velocidad: {camion[4]}
-Caballaje: {camion[5]}
-Plazas: {camion[6]}
-Ejes: {camion[7]}
-Capacidad: {camion[8]} T
-"""
+    ID: {camion[0]}
+    Marca: {camion[1]}
+    Color: {camion[2]}
+    Modelo: {camion[3]}
+    Velocidad: {camion[4]}
+    Caballaje: {camion[5]}
+    Plazas: {camion[6]}
+    Eje: {camion[7]}
+    Capacidad de carga: {camion[8]}
+    """
         Label(ventana, text=texto, justify=LEFT).pack(pady=5)
 
         def eliminar():
-            funciones.Camiones.eliminar(camion)
+            id_camion = camion[0]
+            ok = funciones.Camiones.eliminar(id_camion)
+
+            if ok:
+                messagebox.showinfo("Éxito", "Camión eliminado correctamente.")
+                Vista.menu_camiones(ventana)
+            else:
+                messagebox.showerror("Error", "No se pudo eliminar el camión.")
 
         Button(ventana, text="Eliminar", command=eliminar).pack(pady=10)
         Button(ventana, text="Cancelar", command=lambda: Vista.menu_camiones(ventana)).pack(pady=10)
+
+    @staticmethod
+    def menu_camionetas(ventana):
+        Vista.borrarPantalla(ventana)
+        Label(ventana, text="..:: Menú de Camionetas ::..").pack()
+
+        Button(ventana, text="Insertar", command=lambda: Vista.insertar_camionetas(ventana)).pack(pady=10)
+        Button(ventana, text="Consultar", command=lambda: Vista.consultar_camionetas(ventana)).pack(pady=10)
+        Button(ventana, text="Cambiar", command=lambda: Vista.cambiar_camionetas_pedir_id(ventana)).pack(pady=10)
+        Button(ventana, text="Borrar", command=lambda: Vista.borrar_camionetas(ventana)).pack(pady=10)
+        Button(ventana, text="Volver", command=lambda: Vista.menu_principal(ventana)).pack(pady=10)
+
+    @staticmethod
+    def insertar_camionetas(ventana):
+
+        Vista.borrarPantalla(ventana)
+        Label(ventana, text="..:: Insertar Camioneta ::..").pack()
+
+        marca = StringVar()
+        color = StringVar()
+        modelo = IntVar()
+        velocidad = IntVar()
+        caballaje = IntVar()
+        plazas = IntVar()
+        traccion = StringVar()
+        cerrada = BooleanVar()
+
+        campos = [
+            ("Marca", marca),
+            ("Color", color),
+            ("Modelo", modelo),
+            ("Velocidad", velocidad),
+            ("Caballaje", caballaje),
+            ("Plazas", plazas),
+            ("Tracción (4x2 / 4x4)", traccion),
+        ]
+
+        for texto, var in campos:
+            Label(ventana, text=texto).pack()
+            Entry(ventana, textvariable=var, width=15).pack(pady=5)
+
+        Label(ventana, text="¿Es cerrada? (True/False)").pack()
+        Entry(ventana, textvariable=cerrada, width=15).pack(pady=5)
+
+        def guardar():
+            camioneta = funciones.Camionetas(
+                marca.get(),
+                color.get(),
+                modelo.get(),
+                velocidad.get(),
+                caballaje.get(),
+                plazas.get(),
+                traccion.get(),
+                cerrada.get()
+            )
+
+            if camioneta.insertar():
+                messagebox.showinfo("Éxito", "Camioneta guardada correctamente.")
+            else:
+                messagebox.showerror("Error", "No se pudo guardar la camioneta.")
+
+        Button(ventana, text="Guardar", command=guardar).pack(pady=10)
+        Button(ventana, text="Volver", command=lambda: Vista.menu_camionetas(ventana)).pack(pady=10)
+
+    @staticmethod
+    def consultar_camionetas(ventana):
+
+        Vista.borrarPantalla(ventana)
+
+        Label(ventana, text="..:: Camionetas Registradas ::..").pack(pady=10)
+
+        camionetas = funciones.Camionetas.consultar()
+
+        if not camionetas:
+            Label(ventana, text="No hay camionetas registradas.").pack(pady=10)
+        else:
+            for c in camionetas:
+                texto = f"""
+ID: {c[0]}  
+Marca: {c[1]}  
+Color: {c[2]}  
+Modelo: {c[3]}  
+Velocidad: {c[4]}  
+Caballaje: {c[5]}  
+Plazas: {c[6]}
+Tracción: {c[7]}
+Cerrada: {c[8]}
+"""
+                Label(ventana, text=texto, justify=LEFT, anchor="w").pack()
+
+        Button(ventana, text="Volver", command=lambda: Vista.menu_camionetas(ventana)).pack(pady=10)
+
+    @staticmethod
+    def cambiar_camionetas_pedir_id(ventana):
+        Vista.borrarPantalla(ventana)
+
+        Label(ventana, text="..:: Cambiar Camioneta ::..").pack()
+        Label(ventana, text="Ingrese el ID de la camioneta a modificar:").pack()
+
+        id_var = IntVar()
+        Entry(ventana, textvariable=id_var, width=15).pack(pady=5)
+
+        def buscar():
+            datos = funciones.Camionetas.consultar()
+
+            for c in datos:
+                if c[0] == id_var.get():
+                    Vista.cambiar_camionetas_formulario(ventana, c)
+                    return
+
+            messagebox.showerror("Error", "No existe una camioneta con ese ID.")
+
+        Button(ventana, text="Buscar", command=buscar).pack(pady=10)
+        Button(ventana, text="Volver", command=lambda: Vista.menu_camionetas(ventana)).pack(pady=10)
+
+    @staticmethod
+    def cambiar_camionetas_formulario(ventana, datos):
+        Vista.borrarPantalla(ventana)
+
+        Label(ventana, text="..:: Modificar Camioneta ::..").pack()
+
+        id_camioneta = datos[0]
+
+        marca = StringVar(value=datos[1])
+        color = StringVar(value=datos[2])
+        modelo = IntVar(value=datos[3])
+        velocidad = IntVar(value=datos[4])
+        caballaje = IntVar(value=datos[5])
+        plazas = IntVar(value=datos[6])
+        traccion = StringVar(value=datos[7])
+        cerrada = BooleanVar(value=datos[8])
+
+        campos = [
+            ("Marca", marca),
+            ("Color", color),
+            ("Modelo", modelo),
+            ("Velocidad", velocidad),
+            ("Caballaje", caballaje),
+            ("Plazas", plazas),
+            ("Tracción (4x2/4x4)", traccion),
+        ]
+
+        for texto, var in campos:
+            Label(ventana, text=texto).pack()
+            Entry(ventana, textvariable=var, width=15).pack(pady=5)
+
+        Label(ventana, text="¿Es cerrada? (True/False)").pack()
+        Entry(ventana, textvariable=cerrada, width=15).pack(pady=5)
+
+        def guardar_cambios():
+            ok = funciones.Camionetas.actualizar(
+                marca.get(),
+                color.get(),
+                modelo.get(),
+                velocidad.get(),
+                caballaje.get(),
+                plazas.get(),
+                traccion.get(),
+                cerrada.get(),
+                id_camioneta
+            )
+
+            if ok:
+                messagebox.showinfo("Éxito", "Camioneta actualizada correctamente.")
+                Vista.menu_camionetas(ventana)
+            else:
+                messagebox.showerror("Error", "No se pudo actualizar la camioneta.")
+
+        Button(ventana, text="Guardar Cambios", command=guardar_cambios).pack(pady=10)
+        Button(ventana, text="Volver", command=lambda: Vista.menu_camionetas(ventana)).pack(pady=10)
+
+
+    @staticmethod
+    def borrar_camionetas(ventana):
+        Vista.borrarPantalla(ventana)
+        Label(ventana, text="..:: Borrar Camioneta ::..").pack()
+
+        Label(ventana, text="Ingrese el ID de la camioneta a eliminar").pack()
+
+        id_var = IntVar()
+        Entry(ventana, textvariable=id_var, width=15).pack(pady=5)
+
+        def buscar():
+            datos = funciones.Camionetas.consultar()
+
+            for c in datos:
+                if c[0] == id_var.get():
+                    Vista.borrar_camionetas_confirmacion(ventana, c)
+                    return
+
+            messagebox.showerror("Error", "No existe una camioneta con ese ID.")
+
+        Button(ventana, text="Buscar", command=buscar).pack(pady=10)
+        Button(ventana, text="Volver", command=lambda: Vista.menu_camionetas(ventana)).pack(pady=10)
+
+    @staticmethod
+    def borrar_camionetas_confirmacion(ventana, c):
+        Vista.borrarPantalla(ventana)
+
+        Label(ventana, text="..:: Confirmar Eliminación ::..").pack(pady=5)
+
+        texto = f"""
+    ID: {c[0]}
+    Marca: {c[1]}
+    Color: {c[2]}
+    Modelo: {c[3]}
+    Velocidad: {c[4]}
+    Caballaje: {c[5]}
+    Plazas: {c[6]}
+    Tracción: {c[7]}
+    Cerrada: {c[8]}
+    """
+        Label(ventana, text=texto, justify=LEFT).pack(pady=5)
+
+        def eliminar():
+            ok = funciones.Camionetas.eliminar(c[0])
+
+            if ok:
+                messagebox.showinfo("Éxito", "Camioneta eliminada correctamente.")
+                Vista.menu_camionetas(ventana)
+            else:
+                messagebox.showerror("Error", "No se pudo eliminar la camioneta.")
+
+        Button(ventana, text="Eliminar", command=eliminar).pack(pady=10)
+        Button(ventana, text="Cancelar", command=lambda: Vista.menu_camionetas(ventana)).pack(pady=10)
